@@ -26,9 +26,8 @@
 			<value>classpath:salesforceconfig.properties</value>
 		</property>
 	</bean>
-	<bean id="salesforce"
-		class="org.apache.camel.component.salesforce.SalesforceComponent">
-
+	
+	<bean id="salesforce" class="org.apache.camel.component.salesforce.SalesforceComponent">
 		<property name="loginConfig">
 			<bean class="org.apache.camel.component.salesforce.SalesforceLoginConfig">
 				<property name="loginUrl" value="${loginUrl}"></property>
@@ -47,63 +46,57 @@
 		</property>
 		<property name="packages" value="${sObjectDTOPackages}"></property>
 	</bean>
-  	<bean id="myOpportunityAggregator"
-		class="com.redhat.salesforce.OpportunityAggregator" />
+  	<bean id="myOpportunityCache" class="com.redhat.salesforce.OpportunityCache" />
 		
   	<camelContext xmlns="http://camel.apache.org/schema/spring">
-  <restConfiguration component="jetty" port="9191" bindingMode="json"/>
-  <rest path="/opportunity">
-    <get uri="/getList">
-      <to uri="direct:getOppoRecentList"/>
-    </get>
-    <get uri="/updateOppos/{oppnum}/{status}">
-      <to uri="direct:updateStatus"/>
-    </get>
-  </rest>
+	  <restConfiguration component="jetty" port="9191" bindingMode="json"/>
+	  <rest path="/opportunity">
+	    <get uri="/getList">
+	      <to uri="direct:getOppoRecentList"/>
+	    </get>
+	  </rest>
  
-  <route id="getList">
-    <from uri="direct:getOppDetail"/>
-    <marshal>
-            <json library="Jackson" prettyPrint="true"/>
-    </marshal>
-    <setHeader headerName="sObjectId">
-    	<jsonpath>id</jsonpath>        
-  	</setHeader>
-  	<log message="IDIDIDID: ${headers.sObjectId}"/>
-  	<to uri="salesforce:getSObject?sObjectName=Opportunity" />
-  	<log message="return from salesforce ${body}"/>
-  	<to uri="seda:aggregate"/>
-  </route>
-  <route id="getOppoRecentList">
-    <from uri="direct:getOppoRecentList"/>
-    <to uri="salesforce:getBasicInfo"/>
-    <log message="Query result back from Salesforce: ${body}"/>
-    <marshal>
-            <json library="Jackson" prettyPrint="true"/>
-    </marshal>
-    <split>
-    	 <jsonpath suppressExceptions="true">recentItems</jsonpath>
-    	 <log message="${body}"/>
-    	 <to uri="direct:getOppDetail"/>
-    </split>
-  </route>
+  	<route id="getOppoRecentList">
+  		<from uri="direct:getOppoRecentList"/>
+  		<to uri="direct:AllList"/>
+  		<bean ref="myOpportunityCache" method="getAllOpps" />
+  		<convertBodyTo type="java.lang.String"/>
+  		<log message="FINISHED ==> ${body}"/>
+  	</route>
   
-  <route id="aggregateOpps">
+  	<route id="getAllList">
+	    <from uri="direct:AllList"/>
+	    <to uri="salesforce:getBasicInfo"/>
+	    <log message="Query result back from Salesforce: ${body}"/>
+	    <marshal>
+	            <json library="Jackson" prettyPrint="true"/>
+	    </marshal>
+	    <split>
+	    	 <jsonpath suppressExceptions="true">recentItems</jsonpath>
+	    	 <log message="${body}"/>
+	    	 <to uri="direct:getOppDetail"/>
+	    </split>
+	</route>
+  
+	<route id="getIndiviualOpp">
+	    <from uri="direct:getOppDetail"/>
+	    <marshal>
+	            <json library="Jackson" prettyPrint="true"/>
+	    </marshal>
+	    <setHeader headerName="sObjectId">
+	    	<jsonpath>id</jsonpath>        
+	  	</setHeader>
+	  	<to uri="salesforce:getSObject?sObjectName=Opportunity" />
+	  	<log message="return from salesforce ${body}"/>
+	  	<to uri="seda:aggregate" />
+	</route>
+  
+  	<route id="aggregateOpps">
 	  <from uri="seda:aggregate"/>
-	  <aggregate strategyRef="myOpportunityAggregator" completionTimeout="5000">
-	    <correlationExpression>
-	      <constant>true</constant>
-	    </correlationExpression>
-	    <log message="FINISHES ==> ${body}"/>
-	  </aggregate>
-	  
-  </route>
+	  <bean ref="myOpportunityCache" method="addOpps(${body})" />
+  	</route>
   
-  <route id="updateOpps">
-    <from uri="direct:updateStatus"/>
-    <to uri="salesforce:getSObject?sObjectName=Opportunity&amp;sObjectIdName=AccountId&amp;sObjectIdValue=0012800000dg9xOAAQ"/>
-    <log message="Query result back from Salesforce: ${body}"/>
-  </route>
+  
 </camelContext>
 
 </beans>
