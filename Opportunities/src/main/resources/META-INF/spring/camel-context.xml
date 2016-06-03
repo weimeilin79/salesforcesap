@@ -47,12 +47,16 @@
 		<property name="packages" value="${sObjectDTOPackages}"></property>
 	</bean>
   	<bean id="myOpportunityCache" class="com.redhat.salesforce.OpportunityCache" />
+  	<bean id="myOpportunityService" class="com.redhat.salesforce.OpportunityService" />
 		
   	<camelContext xmlns="http://camel.apache.org/schema/spring">
 	  <restConfiguration component="jetty" port="9191" bindingMode="json"/>
 	  <rest path="/opportunity">
 	    <get uri="/getList">
 	      <to uri="direct:getOppoRecentList"/>
+	    </get>
+	    <get uri="/updateOpp/{id}/{stagestatus}">
+	      <to uri="direct:updateStatus"/>
 	    </get>
 	  </rest>
  
@@ -96,6 +100,17 @@
 	  <bean ref="myOpportunityCache" method="addOpps(${body})" />
   	</route>
   
+  	<route id="updateStatus">
+  		<from uri="direct:updateStatus"/>
+  		<setHeader headerName="sObjectId">
+	    	<simple>${headers.id}</simple>        
+	  	</setHeader>
+	  	<to uri="salesforce:getSObject?sObjectName=Opportunity" />
+	  	<log message="stagestatus to update ${headers.stagestatus}"/>
+	  	<bean ref="myOpportunityService" method="updateStatus(${body},${headers.stagestatus})" />
+	  	<to uri="salesforce:updateSObject?sObjectName=Opportunity" />
+	  	<log message="return from salesforce ${body}"/>
+  	</route>
   
 </camelContext>
 

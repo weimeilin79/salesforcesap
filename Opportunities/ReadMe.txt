@@ -1,5 +1,5 @@
-Camel Router Spring Project
-===========================
+Camel Router Salesforce Opportunity Application
+==================================================
 
 To build this project use
 
@@ -9,6 +9,16 @@ To run this project with Maven use
 
     mvn camel:run
 
-For more help see the Apache Camel documentation
+To get the Opportunity List, 
+http://IP:9191/opportunity/getList
 
-    http://camel.apache.org/
+Example: http://localhost:9191/opportunity/getList
+
+To update the Oppotunity statys 
+http://IP:9191/opportunity/updateOpp/{ID}/{STATUS}
+
+Available status are: 
+CLOSEWON
+PROSPECTING
+
+Example: http://localhost:9191/opportunity/updateOpp/00628000008yT2Y/CLOSEWON
