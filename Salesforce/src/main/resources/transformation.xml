@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd">
+    <configuration>
+        <wildcard>false</wildcard>
+    </configuration>
+    <mapping>
+        <class-a>org.apache.camel.salesforce.dto.Account</class-a>
+        <class-b>com.redhat.sap.req.CustomerData</class-b>
+        <field>
+            <a>BillingCity</a>
+            <b>city</b>
+        </field>
+        <field>
+            <a>BillingCountry</a>
+            <b>country</b>
+        </field>
+        <field>
+            <a>Name</a>
+            <b>custname</b>
+        </field>
+        <field>
+            <a>Phone</a>
+            <b>phone</b>
+        </field>
+        <field>
+            <a>Id</a>
+            <b>email</b>
+        </field>
+        <field>
+            <a>BillingPostalCode</a>
+            <b>postcode</b>
+        </field>
+        <field>
+            <a>BillingStreet</a>
+            <b>street</b>
+        </field>
+    </mapping>
+</mappings>
