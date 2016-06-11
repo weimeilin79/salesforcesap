@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+  	<!-- here is a sample which processes the input files
+         (leaving them in place - see the 'noop' flag)
+         then performs content based routing on the message using XPath -->
+         
+	<camelContext xmlns="http://camel.apache.org/schema/spring">
+	  <route id="createdata">
+	    <from uri="file:src/data?noop=true"/>
+	    <convertBodyTo type="java.lang.String"/>
+	    <log message="${body}" loggingLevel="INFO"/>
+	    <to uri="sap-srfc-destination:quickstartDest:BAPI_FLCUST_GETLIST"/>
+	    <log message="${body}" loggingLevel="INFO"/>
+	  </route>
+	</camelContext>
+
+	<!-- Configures the Inbound and Outbound SAP Connections -->
+	<bean id="sap-configuration"
+		class="org.fusesource.camel.component.sap.SapConnectionConfiguration">
+		<property name="destinationDataStore">
+			<map>
+				<entry key="quickstartDest" value-ref="quickstartDestinationData" />
+			</map>
+		</property>
+	</bean>
+
+    <!-- Configures an Outbound SAP Connection -->
+    <!-- *** Please enter the connection property values for your environment *** -->
+    <bean id="quickstartDestinationData"
+        class="org.fusesource.camel.component.sap.model.rfc.impl.DestinationDataImpl">
+        <property name="ashost" value="54.84.183.176" />
+        <property name="sysnr" value="00" />
+        <property name="client" value="001" />
+        <property name="user" value="SAP*" />
+        <property name="passwd" value="A123456a" />
+        <property name="lang" value="en" />
+    </bean>
+</beans>
