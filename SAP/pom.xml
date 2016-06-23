@@ -25,7 +25,8 @@
     <fabric8.service.port>80</fabric8.service.port>
     <fabric8.service.containerPort>${http.port}</fabric8.service.containerPort>
     
-    
+    <http.port>9191</http.port>
+     
 	<fabric8.env.A_MQ_SERVICE_NAME>BROKER_AMQ_TCP</fabric8.env.A_MQ_SERVICE_NAME>
 	
     <fabric8.label.component>${project.artifactId}</fabric8.label.component>
@@ -84,6 +85,18 @@
       <name>RedHat GA repository</name>
       <url>https://maven.repository.redhat.com/ga</url>
     </repository>  
+    <repository>
+      <id>ga.redhat.com</id>
+      <name>RedHat Summit SAP repo</name>
+      <url>http://nexus-ci.cloudapps.summit.openshift3roadshow.com/content/repositories/summit.redhat.sap</url>
+     <snapshots>
+      <enabled>false</enabled>
+     </snapshots>
+     <releases>
+      <enabled>true</enabled>
+     </releases>
+    </repository> 
+    
   </repositories>
 
   <pluginRepositories>
@@ -136,9 +149,7 @@
     <dependency>              	
 		<groupId>com.sap.conn.jco</groupId>              
 		<artifactId>sapjco3</artifactId>              
-		<version>3.0.11</version>              
-		<scope>system</scope>              
-		<systemPath>${project.basedir}/lib/sapjco3.jar</systemPath>        
+		<version>3.0.11</version>       
 	</dependency>
     <dependency>
       <groupId>org.fusesource</groupId>
