@@ -108,6 +108,17 @@
      <releases>
       <enabled>true</enabled>
      </releases>
+    </pluginRepository>
+    <pluginRepository>
+     <id>ga.redhat.com</id>
+     <name>RedHat GA repository</name>
+     <url>https://maven.repository.redhat.com/ga</url>
+     <snapshots>
+      <enabled>false</enabled>
+     </snapshots>
+     <releases>
+      <enabled>true</enabled>
+     </releases>
     </pluginRepository>      
   </pluginRepositories>
 
@@ -127,7 +138,7 @@
 		<artifactId>sapjco3</artifactId>              
 		<version>3.0.11</version>              
 		<scope>system</scope>              
-		<systemPath>/Users/christina/workspace/62SalesforceSAP/SAP/lib/sapjco3.jar</systemPath>        
+		<systemPath>${basedir}/lib/sapjco3.jar</systemPath>        
 	</dependency>
     <dependency>
       <groupId>org.fusesource</groupId>
