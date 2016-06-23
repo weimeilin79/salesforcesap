@@ -113,7 +113,18 @@
      <releases>
       <enabled>true</enabled>
      </releases>
-    </pluginRepository>      
+    </pluginRepository> 
+    <pluginRepository>
+     <id>ga.redhat.com</id>
+     <name>RedHat GA repository</name>
+     <url>https://maven.repository.redhat.com/ga</url>
+     <snapshots>
+      <enabled>false</enabled>
+     </snapshots>
+     <releases>
+      <enabled>true</enabled>
+     </releases>
+    </pluginRepository>    
   </pluginRepositories>
 
 <dependencies>
