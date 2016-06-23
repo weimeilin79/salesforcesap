@@ -77,18 +77,18 @@
      <releases>
       <enabled>true</enabled>
      </releases>
-    </repository>   
-    <repository>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>ga.redhat.com</id>
-      <name>RedHat GA repository</name>
-      <url>https://maven.repository.redhat.com/ga</url>
     </repository> 
+    <repository>
+     <id>ga.redhat.com</id>
+     <name>RedHat GA repository</name>
+     <url>https://maven.repository.redhat.com/ga</url>
+     <snapshots>
+      <enabled>false</enabled>
+     </snapshots>
+     <releases>
+      <enabled>true</enabled>
+     </releases>
+    </repository>   
   </repositories>
 
   <pluginRepositories>
