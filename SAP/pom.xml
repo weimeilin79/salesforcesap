@@ -86,7 +86,7 @@
       <url>https://maven.repository.redhat.com/ga</url>
     </repository>  
     <repository>
-      <id>ga.redhat.com</id>
+      <id>sap.redhat.com</id>
       <name>RedHat Summit SAP repo</name>
       <url>http://nexus-ci.cloudapps.summit.openshift3roadshow.com/content/repositories/summit.redhat.sap</url>
      <snapshots>
