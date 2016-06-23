@@ -50,8 +50,20 @@
 	
 	<bean id="flightCustomerCreateReq" class="com.redhat.sap.req.FlightCustomerCreateReq" />
 	
+	<bean id="amqConnectionFactory" class="io.fabric8.mq.core.MQConnectionFactory">
+   		<property name="userName" value="admin"/>
+		<property name="password" value="admin"/>
+	</bean>
+	<bean id="amq" class="io.fabric8.mq.camel.AMQComponent"></bean>
 	
-  	<camelContext xmlns="http://camel.apache.org/schema/spring">
+	<bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+      <property name="brokerURL" value="tcp://localhost:61616"/>
+      <property name="userName" value="admin"/>
+      <property name="password" value="admin"/>
+  	</bean>
+	
+	
+ <camelContext xmlns="http://camel.apache.org/schema/spring">
   <endpoint uri="dozer:CustomerDataTransform?sourceModel=org.apache.camel.salesforce.dto.Account&amp;targetModel=com.redhat.sap.req.CustomerData&amp;mappingFile=transformation.xml" id="CustomerDataTransform"/>
   <route id="oppchangelistener">
     <from uri="salesforce:CamelTestTopic?notifyForOperationUndelete=true&amp;notifyForFields=ALL&amp;sObjectName=Opportunity&amp;updateTopic=true&amp;sObjectQuery=SELECT id,name,AccountId,StageName from Opportunity"/>
@@ -63,9 +75,12 @@
       <jsonpath>accountId</jsonpath>
     </setHeader>
     <log message="accountId: ${headers.accountID}"/>
+    <setHeader headerName="stageName">
+      <jsonpath>stageName</jsonpath>
+    </setHeader>
     <choice>
       <when>
-        <language language="jsonpath">stageName=='CLOSED_WON'</language>
+        <simple>${headers.stageName} == 'CLOSED_WON'</simple>
         <to uri="direct:getAccount"/>
       </when>
     </choice>
@@ -83,6 +98,7 @@
       <jaxb contextPath="com.redhat.sap.req" prettyPrint="true"/>
     </unmarshal>
     <log message="XML to SAP : ${body}"/>
+    <to uri="amq:queue:TOSAP" />
   </route>
 </camelContext>
 
