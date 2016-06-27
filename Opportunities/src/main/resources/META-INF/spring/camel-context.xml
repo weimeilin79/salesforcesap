@@ -62,6 +62,7 @@
  
   	<route id="getOppoRecentList">
   		<from uri="direct:getOppoRecentList"/>
+  		<bean ref="myOpportunityCache" method="clearOpps" />
   		<to uri="direct:AllList"/>
   		<bean ref="myOpportunityCache" method="getAllOpps" />
   		<convertBodyTo type="java.lang.String"/>

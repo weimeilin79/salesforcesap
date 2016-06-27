@@ -9,6 +9,11 @@ public class OpportunityCache{
 	
 	List<Opportunity> opportunties = new ArrayList<Opportunity>();
 
+	public void clearOpps() throws Exception {
+		
+		 opportunties.clear();
+	     
+	}
 	
 	public void addOpps(Opportunity newOpp) throws Exception {
 		
